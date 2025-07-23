@@ -87,7 +87,7 @@ CFLP_[percent]SGR.json
 - List of feasible solutions
 - Opened facilities for each solution
 - Planning unit assignments per facility
-- Student count per facility (based on base enrollment only)
+- Student count per facility (based on base enrollment and SGR factor)
 
 ---
 
