@@ -24,6 +24,7 @@ def broad_filter(res_cases):
     filtered_words = filtered_in[~filtered_in['A_DESCRIPT'].str.contains(pattern_avoid, case=False, na=False)]
 
     # filter out entries that were last updated over 5 years ago
+    filtered_words = filtered_words.copy()
     filtered_words['A_STATUS_D'] = pd.to_datetime(filtered_words['A_STATUS_D'])
     filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2020]
 
@@ -145,8 +146,8 @@ def fill_types(match_results):
 
 
 def main():
-    filepath = input('Please input the path to Durham developments shapefile: ').strip()
-    res_cases_raw = gpd.read_file(filepath)
+    filepath = input('Please input the name of Durham developments shapefile: ').strip() # use durham_developments from data folder
+    res_cases_raw = gpd.read_file(f'../data/{filepath}')
 
     res_filtered = broad_filter(res_cases_raw)
     res_filtered['match_results'] = res_filtered['A_DESCRIPT'].apply(extract_units)
