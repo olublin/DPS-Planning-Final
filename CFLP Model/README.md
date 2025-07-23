@@ -71,7 +71,7 @@ python CFLP_model.py
 
 The model may take several hours to complete depending on your system specifications and solver parameters.
 
-Log output will be saved to: CFLP_halfSGR_output_v4.log
+Log output will be saved to: CFLP_[percent]SGR_output.log
 
 You may modify the log filename in the script to reflect different SGR scenarios or testing versions.
 
