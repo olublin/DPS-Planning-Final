@@ -73,8 +73,6 @@ The model may take several hours to complete depending on your system specificat
 
 Log output will be saved to: CFLP_[percent]SGR_output.log
 
-You may modify the log filename in the script to reflect different SGR scenarios or testing versions.
-
 ---
 
 ## Outputs
