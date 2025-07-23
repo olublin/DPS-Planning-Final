@@ -43,7 +43,7 @@ A GeoJSON file containing all planning units with student data and geometries. T
 
 - `pu_2324_84`: Unique Planning Unit ID
 - `basez`: Base enrollment count
-- `student_gen`: Student generation count
+- `student_gen`: Student generation count from SGR
 - `geometry`: Polygon geometry of the planning unit
 
 > **You can generate this input using the script:**  
