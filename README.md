@@ -1,8 +1,8 @@
 # DPS-Planning-Final
 
-![DPS Logo](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.dpsnc.net%2F&psig=AOvVaw03s9PEiDqAU-GpvtMGFHFy&ust=1753448500304000&source=images&cd=vfe&opi=89978449&ved=0CBYQjRxqFwoTCMCe9OnG1Y4DFQAAAAAdAAAAABAJ)
+![alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm6QwtUnefiWRafxJEMVU0DHZuwVuumvxCsA&s)
 
-By [Emily Lewis-Farrell], [Kevan Wang], [Leah Wallihan], [Oliver Lublin]
+By Emily Lewis-Farrell (@egl0404), Kevan Wang (@KevanWang05), Leah Wallihan (LtheWall00), Oliver Lublin (@olublin)
 
 This repository contains the necessary scripts and datasets to filter residential developments for relevancy, generate student generation from filtered new developments in Durham County, and apply this to **CFLP linear optimization** and **Gravity** models for optimal boundary and site generation for new public school siting locations
 
@@ -28,3 +28,6 @@ Enrollment Projection = basez + k * student_gen
 
 ---
 
+## Acknowledgements
+
+This project would not be possible without the guidance and work put in by our project lead, Vitaly Radsky, and our project manager, Cameron Moore.
