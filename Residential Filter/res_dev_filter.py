@@ -155,7 +155,7 @@ def main():
 
     filtered_final = pd.concat([res_filtered, housing_counts], axis=1)
     filtered_final = res_filtered.to_crs('EPSG:4326')
-    filtered_final.to_file('resdev_filtered.geojson', driver='GeoJSON')
+    filtered_final.to_file('../outputs/Residential Filter/resdev_filtered.geojson', driver='GeoJSON')
     print("Finished processing. Output saved to 'resdev_filtered.geojson'.")
 
 if __name__ == "__main__":
