@@ -5,9 +5,11 @@ In order to do this, the script:
 
 ## A: Projects Student Generation by Filtering Developoments
 
-### 1: Filters for residential developments over the last 5 years that contribute to DPS enrollment by using regular expressions and sorting for relevant development types.
+### 1: Filters for residential developments 
+This script filters all Durham developments over the last 5 years that contribute to DPS enrollment by using regular expressions and sorting for relevant development types.
 
-### 2: Extracts the **quantity** and **type of units** for each development, as entered in the developments database. The 5 unit types included in the script are:
+### 2: Extracts the **quantity** and **type of units** for each development. 
+The 5 unit types included in the script are:
     - `sf_detach` - Single Family Detatched homes
     - `sf_attach` - Single Family Attatched homes (such as townhomes)
     - `du_tri` - Duplexes and Triplexes
@@ -15,7 +17,8 @@ In order to do this, the script:
     - `condo` - Condos
 The script maps the geodataframe of all developments to recognize these development types.
 
-### 3: Multiplies the quantity of developments with the corresponding **student generation rate**, matched by housing type and region of Durham, to project the number of students generated at a planning unit level.
+### 3: Calculates generated students by planning unit
+Multiplies the quantity of developments with the corresponding **student generation rate**, matched by housing type and region of Durham, to project the number of students generated at a planning unit level.
 
 ## B: Combines Student Generation with Current Enrollment in a Geodataframe
 
