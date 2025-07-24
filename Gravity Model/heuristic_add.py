@@ -105,14 +105,32 @@ def score_candidate(candidate,sgr,lower_bound,upper_bound):
         counts['pct_capacity'] = counts['count']/counts['capacity']
         i+=1
 
+    local_hs_full_geo.to_file('school_geo.geojson')
+    counts.drop(columns=['adjust']).to_file('counts.json')
+
     if i<=200:
         objective=local_hs_full_geo.merge(local_dps_base_hs,left_on='assign',right_on='name',how='left')
         objective['distance']=objective['geometry_x'].distance(objective['geometry_y'])
         objective_score = ((objective['basez']+sgr*objective['student_gen']/100)*objective['distance']).sum()/(10**7)
-        return objective_score,i,counts.drop(columns=['adjust'])
+        fig,ax = plt.subplots(figsize = (7,9))
 
+        local_hs_full_geo.plot(
+            column='assign',
+            ax = ax,
+            cmap = 'viridis',
+            legend = True
+        )
+
+        ax.set_xticks([])
+        ax.set_yticks([])
+        local_dps_base_hs.plot(ax=plt.gca(), color = 'white')
+
+        plt.savefig('assignment_map.png',dpi=300)
+        plt.title('Expanded HS Boundaries')
     else:
-        return 'Failed to set boundaries within 200 tries. Try again with different capacity bounds.',counts
+        print('Error: Unable to find satisfactory solution within 200 attempts')
+
+
 
 
 # In[73]:
@@ -129,23 +147,3 @@ up = int(input('What upper bound of capacity? '))
 
 candidate = local_hs_full_geo.loc[pu]
 score_candidate(candidate,sgr,low,up)
-
-
-# In[75]:
-
-
-fig,ax = plt.subplots(figsize = (7,9))
-
-local_hs_full_geo.plot(
-    column='assign',
-    ax = ax,
-    cmap = 'viridis',
-    legend = True
-)
-
-ax.set_xticks([])
-ax.set_yticks([])
-
-plt.title('Expanded HS Boundaries')
-local_dps_base_hs.plot(ax=plt.gca(), color = 'white')
-
