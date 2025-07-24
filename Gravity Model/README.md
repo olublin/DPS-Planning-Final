@@ -84,8 +84,10 @@ counts.json
 
 ### 3. GeoJSON Assignment Maps
 
-assignment_map.geojson
+assignment_map.png
 
 **Map of school boundaries assigned by model.**
 
-These can be loaded into GIS software such as **QGIS** to visualize how planning units are assigned to school sites.
+If the model cannot successfully assign boundaries for all schools within the capacity range in 200 attempts, it will still return **1** and **2** with the assignments and student counts after the 200th attempt.
+
+
