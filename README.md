@@ -2,11 +2,11 @@
 
 ![alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm6QwtUnefiWRafxJEMVU0DHZuwVuumvxCsA&s)
 
-By Emily Lewis-Farrell (@egl0404), Kevan Wang (@KevanWang05), Leah Wallihan (LtheWall00), Oliver Lublin (@olublin)
+By [Emily Lewis-Farrell](https://github.com/egl0404), [Kevan Wang](https://github.com/KevanWang05), [Leah Wallihan](https://github.com/LtheWall00), [Oliver Lublin](https://github.com/olublin).
 
-This repository contains the necessary scripts and datasets to filter residential developments for relevancy, generate student generation from filtered new developments in Durham County, and apply this to **CFLP linear optimization** and **Gravity** models for optimal boundary and site generation for new public school siting locations
+This repository contains the necessary scripts and datasets to filter residential developments for relevancy, generate student generation from filtered new developments in Durham County, and apply this to **CFLP linear optimization** and **Gravity** models for optimal boundary and site generation for new public school siting locations.
 
-All required input data for the complete workflow process is within the *data* folder in the repository
+All required input data for the complete workflow process is within the *data* folder in the repository.
 
 # Workflow
 
@@ -24,7 +24,7 @@ The **Residential Filter** script filters a developments geodataframe to strictl
 
 A geodataframe containing the columns `basez` and `student_gen` is produced from this script, allowing student enrollment projections to be made at the **planning-unit level** by the following formula:
 
-Enrollment Projection = basez + k * student_gen
+***Enrollment Projection = basez + k * student_gen***
 
 ---
 
