@@ -12,9 +12,9 @@ class CFLPModel:
     def __init__(self, pu_path, schools_path, sgr_level='none', include_dsa=False):
         self.pu_path = pu_path
         self.schools_path = schools_path
-        self.sgr_level = self._parse_sgr_level(sgr_level)
+        self.sgr_level = self.parse_sgr_level(sgr_level)
         self.include_dsa = include_dsa
-        self.existing_site_capacities = {
+        self.existing_site_capacities = { # I would like to change this to extract school info from schools_file instead of setting manual capacities
             45: 1400,
             507: 1510,
             602: 1340,
@@ -26,7 +26,7 @@ class CFLPModel:
         self.existing_sites = set(self.existing_site_capacities.keys())
         self.facility_cap = 7 if self.include_dsa else 6
 
-    def _parse_sgr_level(self, level):
+    def parse_sgr_level(self, level):
         return {'none': 0.0, 'half': 0.15, 'full': 0.3}.get(level.lower(), 0.0)
 
     def load_data(self):
@@ -65,7 +65,7 @@ class CFLPModel:
             model.addCons(quicksum(x[i, j] for j in self.J) == self.d[i])
 
         for j in self.M:
-            model.addCons(quicksum(x[i, j] for i in self.I) <= self.M[j] * y[j] * 1.05)
+            model.addCons(quicksum(x[i, j] for i in self.I) <= self.M[j] * y[j] * 1.00)
             model.addCons(quicksum(x[i, j] for i in self.I) >= self.M[j] * y[j] * 0.7)
 
         for i, j in x:
@@ -74,7 +74,7 @@ class CFLPModel:
         for j in self.existing_sites:
             model.addCons(y[j] == 1)
 
-        model.addCons(quicksum(y[j] for j in self.J) <= 6)
+        model.addCons(quicksum(y[j] for j in self.J) <= self.facility_cap)
 
         model.setObjective(
             quicksum(self.c[i, j] * x[i, j] for i in self.I for j in self.J),
@@ -138,10 +138,10 @@ def main():
     args = parser.parse_args()
     
     print(f"Starting CFLP optimization with:")
-    print(f"  Planning Units: {args.pu_file}")
-    print(f"  Schools: {args.schools_file}")
-    print(f"  SGR Level: {args.sgr_level}")
-    print(f"  Include DSA: {args.include_dsa}")
+    print(f"Planning Units: {args.pu_file}")
+    print(f"Schools: {args.schools_file}")
+    print(f"SGR Level: {args.sgr_level}")
+    print(f"Include DSA: {args.include_dsa}")
     print()
 
     model = CFLPModel(args.pu_file, args.schools_file, args.sgr_level, args.include_dsa)
