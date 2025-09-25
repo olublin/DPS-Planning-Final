@@ -26,7 +26,7 @@ def broad_filter(res_cases):
     # filter out entries that were last updated over 5 years ago
     filtered_words = filtered_words.copy()
     filtered_words['A_STATUS_D'] = pd.to_datetime(filtered_words['A_STATUS_D'])
-    filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2023]
+    filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2015]
 
     return filtered_final
 
@@ -155,7 +155,7 @@ def main():
 
     filtered_final = pd.concat([res_filtered, housing_counts], axis=1)
     filtered_final = res_filtered.to_crs('EPSG:4326')
-    filtered_final.to_file('../outputs/Residential Filter/resdev_filtered.geojson', driver='GeoJSON')
+    filtered_final.to_file('../outputs/Residential-Filter/resdev_filtered.geojson', driver='GeoJSON')
     print("Finished processing. Output saved to 'resdev_filtered.geojson'.")
 
 if __name__ == "__main__":

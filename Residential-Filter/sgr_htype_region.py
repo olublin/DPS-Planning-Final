@@ -37,7 +37,7 @@ def broad_filter(res_cases):
     # filter out entries that were last updated over 5 years ago
     filtered_words = filtered_words.copy()
     filtered_words['A_STATUS_D'] = pd.to_datetime(filtered_words['A_STATUS_D'])
-    filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2020]
+    filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2015]
 
     return filtered_final
 
@@ -177,14 +177,16 @@ housing_counts = res_filtered['match_results'].apply(fill_types)
 filtered_final = pd.concat([res_filtered, housing_counts], axis=1)
 filtered_final = filtered_final.to_crs(epsg = 3857)
 
+filtered_final.to_file('../outputs/Residential-Filter/resdev_filtered.geojson', driver='GeoJSON')
 
+'''
 # In[284]:
 
 
 # read data from Data+_2025/data/enrollment_projections/sgr_table_region_2324_20240710.xlsx in Google Drive
 '''
-read in SGR data -- file paths: 
-the current one is from 2024 July 10th, the file is already in data and is named sgr_tables_htype_reg.xlsx
+#read in SGR data -- file paths: 
+#the current one is from 2024 July 10th, the file is already in data and is named sgr_tables_htype_reg.xlsx
 '''
 sgr_filename = input('Please enter the file name which includes the table of SGRs by housing type and region: ')
 sgr_data = gpd.read_file(f'../data/{sgr_filename}')
@@ -206,7 +208,7 @@ sgr_data['sgr_dps_avg_k12'] = pd.to_numeric(sgr_data['sgr_dps_avg_k12'],errors='
 
 
 '''
-read in shapefile to get geometries for Durham County regions from Data+_2025/QGIS/DPS shapefiles from layers in Google Drive
+#read in shapefile to get geometries for Durham County regions from Data+_2025/QGIS/DPS shapefiles from layers in Google Drive
 '''
 regions = gpd.read_file(r'../data/durham_regions.geojson')[['region', 'geometry']]
 regions = regions.to_crs(epsg = 3857)
@@ -346,7 +348,7 @@ full_geo
 
 
 # In[ ]:
-
+'''
 
 
 
