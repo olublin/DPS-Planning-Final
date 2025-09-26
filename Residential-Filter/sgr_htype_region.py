@@ -36,8 +36,8 @@ def broad_filter(res_cases):
 
     # filter out entries that were last updated over 5 years ago
     filtered_words = filtered_words.copy()
-    filtered_words['A_STATUS_D'] = pd.to_datetime(filtered_words['A_STATUS_D'])
-    filtered_final = filtered_words[filtered_words['A_STATUS_D'].dt.year>=2015]
+    filtered_words['A_DATE'] = pd.to_datetime(filtered_words['A_DATE'])
+    filtered_final = filtered_words[filtered_words['A_DATE'].dt.year>=2015]
 
     return filtered_final
 
