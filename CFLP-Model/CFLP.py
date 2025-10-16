@@ -9,29 +9,30 @@ import argparse
 import sys
 
 class CFLPModel:
-    def __init__(self, pu_path, schools_path, sgr_level='none', include_dsa=False):
+    def __init__(self, pu_path, schools_cap_path, sgr_level='none', new_site=False):
         self.pu_path = pu_path
-        self.schools_path = schools_path
+        self.schools_cap_path = schools_cap_path
         self.sgr_level = self.parse_sgr_level(sgr_level)
-        self.include_dsa = include_dsa
-        self.existing_site_capacities = { # I would like to change this to extract school info from schools_file instead of setting manual capacities
-            45: 1400,
-            507: 1510,
-            602: 1340,
-            566: 1240,
-            290: 1335
-        }
-        if include_dsa:
-            self.existing_site_capacities[584] = 500
-        self.existing_sites = set(self.existing_site_capacities.keys())
-        self.facility_cap = 7 if self.include_dsa else 6
+        self.new_site = new_site
 
     def parse_sgr_level(self, level):
         return {'none': 0.0, 'half': 0.15, 'full': 0.3}.get(level.lower(), 0.0)
 
     def load_data(self):
         self.pu = gpd.read_file(f'../data/{self.pu_path}').set_index('pu_2324_84').to_crs('EPSG:4326')
-        self.schools = gpd.read_file(f'../data/{self.schools_path}').to_crs('EPSG:4326')
+
+        # load school capacities from JSON
+        with open(f'../data/{self.schools_cap_path}') as f:
+            school_config = json.load(f)
+
+        self.existing_site_capacities = {
+            school['planning_unit']: school['capacity']
+            for school in school_config['schools']
+        }
+        self.existing_sites = set(self.existing_site_capacities.keys())
+
+        # use --new-site flag
+        self.facility_cap = len(self.existing_sites) + (1 if self.new_site else 0)
 
     def preprocess(self):
         self.pu['basez+gen'] = self.pu['basez'] + self.sgr_level * self.pu['student_gen']
@@ -129,22 +130,22 @@ class CFLPModel:
 def main():
     parser = argparse.ArgumentParser(description='Durham School Planning CFLP Model')
     parser.add_argument('pu_file', help='Filename of the planning units GeoJSON')
-    parser.add_argument('schools_file', help='Filename of the schools GeoJSON')
-    parser.add_argument('sgr_level', choices=['none', 'half', 'full'], 
+    parser.add_argument('schools_cap_file', help='Filename of the schools capacity JSON')
+    parser.add_argument('sgr_level', choices=['none', 'half', 'full'],
                         help='SGR level to use (none, half, full)')
-    parser.add_argument('--include-dsa', action='store_true', 
-                        help='Include Durham School of Arts (default: False)')
-    
+    parser.add_argument('--new-site', action='store_true', default=False,
+                        help='Allow model to select one additional facility site beyond existing schools (default: False)')
+
     args = parser.parse_args()
-    
+
     print(f"Starting CFLP optimization with:")
     print(f"Planning Units: {args.pu_file}")
-    print(f"Schools: {args.schools_file}")
+    print(f"Schools Capacity: {args.schools_cap_file}")
     print(f"SGR Level: {args.sgr_level}")
-    print(f"Include DSA: {args.include_dsa}")
+    print(f"Allow New Site: {args.new_site}")
     print()
 
-    model = CFLPModel(args.pu_file, args.schools_file, args.sgr_level, args.include_dsa)
+    model = CFLPModel(args.pu_file, args.schools_cap_file, args.sgr_level, args.new_site)
     model.load_data()
     model.preprocess()
     model.build_model()
