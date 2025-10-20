@@ -50,8 +50,8 @@ class distanceMatrix:
     def distance_array(self, pu = 1, max_time = 1800, step = 60):
         N = len(self.centroids)
         self.times = [None] * N
-        range1 = range(step, int(2*max_time/3) + step, step)               #loop every minute between 1 and 10 min.
-        range2 = range(int(2*max_time/3) + step, max_time + step, step*2)  #loop every other minute from 11 to 30 min.
+        range1 = range(step, int(2*max_time/3) + step, step)               #loop every minute between 1 and 20 min.
+        range2 = range(int(2*max_time/3) + step, max_time + step, step*2)  #loop every other minute from 21 to 30 min.
         range_all = chain(range1, range2)
         for t in range_all:                                   #branch isochrones by step
             self.isochrone_branching(pu = pu, time = t)
@@ -80,7 +80,7 @@ class distanceMatrix:
             col = self.times
             self.matrix_times[unit] = col
 
-        self.matrix_times.to_csv('dist_matrix_0_80.csv')
+        self.matrix_times.to_csv('dist_matrix_81_170.csv')
  
     
 # %%
@@ -90,7 +90,7 @@ matrix.load_data()
 matrix.get_pu_centroids()
 #matrix.isochrone_branching()
 #matrix.distance_array()
-matrix.build(pu_lower = 0, pu_upper = 80)
+matrix.build(pu_lower = 81, pu_upper = 170)
 
 
 
