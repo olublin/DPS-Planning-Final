@@ -14,6 +14,7 @@ import time
 import folium
 from itertools import chain
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # %%
@@ -71,7 +72,7 @@ class distanceMatrix:
                 break
 
             #sleep to avoid surpassing 40/minute quota
-            time.sleep(1.5)
+            time.sleep(5)
 
     def build(self, pu_lower = 0, pu_upper = 0):
         self.matrix_times = pd.DataFrame()
@@ -80,7 +81,7 @@ class distanceMatrix:
             col = self.times
             self.matrix_times[unit] = col
 
-        self.matrix_times.to_csv('dist_matrix_81_170.csv')
+        self.matrix_times.to_csv('dist_matrix_%d_%d.csv'%(pu_lower,pu_upper))
  
     
 # %%
@@ -88,10 +89,13 @@ class distanceMatrix:
 matrix = distanceMatrix('pu_split_start_0.geojson', 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImRmZGMwZDA3NDVhYzRkNzY5Y2UzN2Q1YTk3MmNlNWQzIiwiaCI6Im11cm11cjY0In0=')
 matrix.load_data()
 matrix.get_pu_centroids()
-#matrix.isochrone_branching()
-#matrix.distance_array()
-matrix.build(pu_lower = 81, pu_upper = 170)
 
+## set bounds here
+lower=141
+upper=220
+batches=np.arange(lower,upper,10)
+for batch in batches:
+    matrix.build(pu_lower = batch, pu_upper = batch+9)
 
 
 
