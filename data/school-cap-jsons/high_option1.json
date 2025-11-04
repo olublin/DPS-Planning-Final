@@ -1,0 +1,24 @@
+{
+  "schools": [
+    {
+      "planning_unit": 601,
+      "capacity": 1309
+    },
+    {
+      "planning_unit": 289,
+      "capacity": 1305
+    },
+    {
+      "planning_unit": 506,
+      "capacity": 1358
+    },
+    {
+      "planning_unit": 44,
+      "capacity": 1360
+    },
+    {
+      "planning_unit": 565,
+      "capacity": 1155
+    }
+  ]
+}
