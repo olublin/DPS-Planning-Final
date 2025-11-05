@@ -81,10 +81,10 @@ class CFLPModel:
             quicksum(self.c[i, j] * x[i, j] for i in self.I for j in self.J),
             "minimize")
 
-        model.setParam('limits/solutions', 1)
-        model.setParam("presolving/maxrounds", 5)
-        model.setEmphasis(SCIP_PARAMEMPHASIS.FEASIBILITY)
-        model.setHeuristics(SCIP_PARAMSETTING.AGGRESSIVE)
+        model.setParam('limits/solutions', 5)
+        model.setParam("presolving/maxrounds", 10)
+        model.setEmphasis(SCIP_PARAMEMPHASIS.OPTIMALITY)
+        model.setHeuristics(SCIP_PARAMSETTING.DEFAULT)
         model.setParam("limits/gap", 0.01)
 
         self.model = model
