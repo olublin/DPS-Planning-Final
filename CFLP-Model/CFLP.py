@@ -47,7 +47,7 @@ class CFLPModel:
         self.facility_cap = len(self.existing_sites) + (1 if self.new_site else 0)
 
     def preprocess(self):
-        self.pu['basez+gen'] = self.pu['basez'] + self.sgr_level * self.pu['student_gen']
+        self.pu['basez+gen'] = self.pu['basez'] + self.sgr_level * self.pu['master_proj_23']
         self.I, self.d = multidict(self.pu['basez+gen'].to_dict())
 
         # Set planning unit capacities
