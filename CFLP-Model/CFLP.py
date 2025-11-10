@@ -14,9 +14,21 @@ class CFLPModel:
         self.schools_cap_path = schools_cap_path
         self.sgr_level = self.parse_sgr_level(sgr_level)
         self.new_site = new_site
+        self.school_type = self.extract_school_type(schools_cap_path)
 
     def parse_sgr_level(self, level):
         return {'none': 0.0, 'half': 0.15, 'full': 0.3}.get(level.lower(), 0.0)
+
+    def extract_school_type(self, filename):
+        """Extract school type (ES, MS, HS) from filename."""
+        filename_upper = filename.upper()
+        if 'ES' in filename_upper:
+            return 'ES'
+        elif 'MS' in filename_upper:
+            return 'MS'
+        elif 'HS' in filename_upper:
+            return 'HS'
+        return 'Unknown'
 
     def load_data(self):
         self.pu = gpd.read_file(f'../data/{self.pu_path}').set_index('pu_2324_84').to_crs('EPSG:4326')
@@ -93,39 +105,52 @@ class CFLPModel:
     def optimize(self):
         self.model.optimize()
         x, y = self.model.data
-        sol = self.model.getBestSol()
 
-        assignments = {}
-        for (i, j) in x:
-            if self.model.getSolVal(sol, x[i, j]) > 0.5:
-                assignments.setdefault(j, []).append(i)
+        # Collect all solutions
+        sols = self.model.getSols()
+        self.solutions = []
 
-        student_counts = {
-            j: sum(self.pu.loc[i, 'basez'] for i in i_list)
-            for j, i_list in assignments.items()
-        }
+        for sol_idx, sol in enumerate(sols, start=1):
+            assignments = {}
+            for (i, j) in x:
+                if self.model.getSolVal(sol, x[i, j]) > 0.5:
+                    assignments.setdefault(j, []).append(i)
 
-        self.solution = {
-            'solution_number': 1,
-            'facilities': list(assignments.keys()),
-            'assignments': assignments,
-            'student_count': student_counts
-        }
+            student_counts = {
+                j: sum(self.pu.loc[i, 'basez'] for i in i_list)
+                for j, i_list in assignments.items()
+            }
+
+            self.solutions.append({
+                'solution_number': sol_idx,
+                'facilities': list(assignments.keys()),
+                'assignments': assignments,
+                'student_count': student_counts
+            })
 
     def export_results(self):
-        pu_copy = self.pu.copy()
-        pu_to_facility = {
-            pu_id: facility
-            for facility, pu_list in self.solution['assignments'].items()
-            for pu_id in pu_list
-        }
-        pu_copy['assignment'] = pu_copy.index.map(pu_to_facility)
+        """Export all solutions with labeled file naming."""
         sgr_label = f"{int(self.sgr_level * 100)}SGR"
-        pu_copy.to_file(f"CFLP_{sgr_label}.geojson", driver="GeoJSON")
+        newsite_label = "newsite" if self.new_site else "noNewSite"
 
-        with open(f"CFLP_{sgr_label}.json", "w") as f:
-            json.dump(self.solution, f, indent=2)
+        for solution in self.solutions:
+            pu_copy = self.pu.copy()
+            pu_to_facility = {
+                pu_id: facility
+                for facility, pu_list in solution['assignments'].items()
+                for pu_id in pu_list
+            }
+            pu_copy['assignment'] = pu_copy.index.map(pu_to_facility)
 
+            # Enhanced filename: CFLP_ES_0SGR_newsite_sol1
+            filename_base = f"CFLP_{self.school_type}_{sgr_label}_{newsite_label}_sol{solution['solution_number']}"
+
+            # Export GeoJSON
+            pu_copy.to_file(f"{filename_base}.geojson", driver="GeoJSON")
+
+            # Export JSON
+            with open(f"{filename_base}.json", "w") as f:
+                json.dump(solution, f, indent=2)
 
 def main():
     parser = argparse.ArgumentParser(description='Durham School Planning CFLP Model')
@@ -149,12 +174,15 @@ def main():
     model.load_data()
     model.preprocess()
     model.build_model()
-    
-    
+
     model.optimize()
     model.export_results()
-    
-    print(f"Optimization complete! Results saved as CFLP_{int(model.sgr_level * 100)}SGR.geojson and .json")
+
+    sgr_label = f"{int(model.sgr_level * 100)}SGR"
+    newsite_label = "newsite" if model.new_site else "noNewSite"
+    print(f"\nOptimization complete!")
+    print(f"Found {len(model.solutions)} solution(s)")
+    print(f"Results saved with pattern: CFLP_{model.school_type}_{sgr_label}_{newsite_label}_sol[N].geojson and .json")
 
 if __name__ == '__main__':
     main()
