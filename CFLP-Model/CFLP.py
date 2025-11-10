@@ -31,10 +31,10 @@ class CFLPModel:
         return 'Unknown'
 
     def load_data(self):
-        self.pu = gpd.read_file(f'../data/{self.pu_path}').set_index('pu_2324_84').to_crs('EPSG:4326')
+        self.pu = gpd.read_file(f'data/{self.pu_path}').set_index('pu_2324_84').to_crs('EPSG:4326')
 
         # load school capacities from JSON
-        with open(f'../data/{self.schools_cap_path}') as f:
+        with open(f'data/{self.schools_cap_path}') as f:
             school_config = json.load(f)
 
         self.existing_site_capacities = {
@@ -52,7 +52,7 @@ class CFLPModel:
 
         # Set planning unit capacities
         not_central = self.pu[self.pu['Region'] != 'Central']
-        pu_dict = {idx: 1550 for idx in not_central.index}
+        pu_dict = {idx: 1530 for idx in not_central.index}
         pu_dict.update(self.existing_site_capacities)
         self.J, self.M = multidict(pu_dict)
 
