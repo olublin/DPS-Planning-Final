@@ -15,6 +15,7 @@ class CFLPModel:
         self.sgr_level = self.parse_sgr_level(sgr_level)
         self.new_site = new_site
         self.school_type = self.extract_school_type(schools_cap_path)
+        self.option = self.extract_option(schools_cap_path)
 
     def parse_sgr_level(self, level):
         return {'none': 0.0, 'half': 0.15, 'full': 0.3}.get(level.lower(), 0.0)
@@ -28,6 +29,18 @@ class CFLPModel:
             return 'MS'
         elif 'HS' in filename_upper:
             return 'HS'
+        return 'Unknown'
+    
+    
+    def extract_option(self, filename):
+        """Extract option type (option1, option2, option3) from filename."""
+        filename_lower = filename.lower()
+        if 'option1' in filename_lower:
+            return 'option1'
+        elif 'option2' in filename_lower:
+            return 'option2'
+        elif 'option3' in filename_lower:
+            return 'option3'
         return 'Unknown'
 
     def load_data(self):
@@ -143,7 +156,7 @@ class CFLPModel:
             pu_copy['assignment'] = pu_copy.index.map(pu_to_facility)
 
             # Enhanced filename: CFLP_ES_0SGR_newsite_sol1
-            filename_base = f"CFLP_{self.school_type}_{sgr_label}_{newsite_label}_sol{solution['solution_number']}"
+            filename_base = f"CFLP_{self.school_type}_{sgr_label}_{newsite_label}_{self.option}_sol{solution['solution_number']}"
 
             # Export GeoJSON
             pu_copy.to_file(f"{filename_base}.geojson", driver="GeoJSON")
