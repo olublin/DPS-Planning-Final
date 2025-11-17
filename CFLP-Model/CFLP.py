@@ -12,13 +12,18 @@ class CFLPModel:
     def __init__(self, pu_path, schools_cap_path, sgr_level='none', new_site=False):
         self.pu_path = pu_path
         self.schools_cap_path = schools_cap_path
+        self.school_type = self.extract_school_type(schools_cap_path)
         self.sgr_level = self.parse_sgr_level(sgr_level)
         self.new_site = new_site
-        self.school_type = self.extract_school_type(schools_cap_path)
         self.option = self.extract_option(schools_cap_path)
 
     def parse_sgr_level(self, level):
-        return {'none': 0.0, 'half': 0.15, 'full': 0.3}.get(level.lower(), 0.0)
+        sgr_mappings = {
+            'ES': {'none': 0.0, 'half': 0.25, 'full': 0.5},
+            'MS': {'none': 0.0, 'half': 0.1, 'full': 0.2},
+            'HS': {'none': 0.0, 'half': 0.15, 'full': 0.3}
+        }
+        return sgr_mappings.get(self.school_type, {}).get(level.lower(), 0.0)
 
     def extract_school_type(self, filename):
         """Extract school type (ES, MS, HS) from filename."""
@@ -60,7 +65,9 @@ class CFLPModel:
         self.facility_cap = len(self.existing_sites) + (1 if self.new_site else 0)
 
     def preprocess(self):
-        self.pu['basez+gen'] = self.pu['basez'] + self.sgr_level * self.pu['master_proj_23']
+        # Select the appropriate basez column based on school type
+        basez_column = f'basez_{self.school_type.lower()}'
+        self.pu['basez+gen'] = self.pu[basez_column] + self.sgr_level * self.pu['master_proj_23']
         self.I, self.d = multidict(self.pu['basez+gen'].to_dict())
 
         # Set planning unit capacities
@@ -129,8 +136,9 @@ class CFLPModel:
                 if self.model.getSolVal(sol, x[i, j]) > 0.5:
                     assignments.setdefault(j, []).append(i)
 
+            basez_column = f'basez_{self.school_type.lower()}'
             student_counts = {
-                j: sum(self.pu.loc[i, 'basez'] for i in i_list)
+                j: sum(self.pu.loc[i, basez_column] for i in i_list)
                 for j, i_list in assignments.items()
             }
 
