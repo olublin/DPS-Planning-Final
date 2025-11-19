@@ -107,7 +107,7 @@ class CFLPModel:
         for j in self.existing_sites:
             model.addCons(y[j] == 1)
 
-        model.addCons(quicksum(y[j] for j in self.J) <= self.facility_cap)
+        model.addCons(quicksum(y[j] for j in self.J) == self.facility_cap)
 
         model.setObjective(
             quicksum(self.c[i, j] * x[i, j] for i in self.I for j in self.J),
