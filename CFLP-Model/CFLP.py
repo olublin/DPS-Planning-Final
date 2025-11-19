@@ -99,7 +99,7 @@ class CFLPModel:
 
         for j in self.M:
             model.addCons(quicksum(x[i, j] for i in self.I) <= self.M[j] * y[j] * 1.00)
-            model.addCons(quicksum(x[i, j] for i in self.I) >= self.M[j] * y[j] * 0.7)
+            model.addCons(quicksum(x[i, j] for i in self.I) >= self.M[j] * y[j] * 0.5)
 
         for i, j in x:
             model.addCons(x[i, j] <= self.d[i] * y[j])
